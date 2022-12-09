@@ -1,0 +1,80 @@
+
+// add csrf token to any ajax requests
+var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+
+// https://stackoverflow.com/questions/985272/selecting-text-in-an-element-akin-to-highlighting-with-your-mouse
+function selectText($element) {
+    node = $element.get(0);
+
+    if (document.body.createTextRange) {
+        const range = document.body.createTextRange();
+        range.moveToElementText(node);
+        range.select();
+    } else if (window.getSelection) {
+        const selection = window.getSelection();
+        const range = document.createRange();
+        range.selectNodeContents(node);
+        selection.removeAllRanges();
+        selection.addRange(range);
+    } else {
+        console.warn("Could not select text in node: Unsupported browser.");
+    }
+}
+
+$(function() {
+
+    $("#roadmap-email-form").on("submit", function(e) {
+        var emailExp = /^[^\s()<>@,;:\/]+@\w[\w\.-]+\.[a-z]{2,}$/i;
+        var emailInp = $(this).find('#roadmap-email');
+        if (!emailExp.test(emailInp.val())) {
+            e.preventDefault();
+            e.stopPropagation();
+            emailInp.addClass('is-invalid');
+        } else {
+            emailInp.removeClass('is-invalid');
+        }
+    });
+
+    $("a.expand").on("click", function(e) {
+        e.preventDefault();
+        $($(this).attr("data-target")).toggle();
+    });
+
+    $('select#id_meeting_type').on('change', function() {
+        var val = $(this).val();
+        var label = $(this).parents('form').find('label[for=id_contact_info]');
+
+        if (val == "phone") {
+            label.html("Your phone number:");
+        } else if (val == "discord_audio" || val == "discord_video") {
+            label.html("Your Discord ID:");
+        } else if (val == "skype_audio" || val == "skype_video") {
+            label.html("Your Skype ID:");
+        } else if (val == "facebook_audio" || val == "facebook_video") {
+            label.html("Your Facebook profile URL (I will send you a friend request):");
+        } else {
+            label.html("Your contact info:");
+        }
+    });
+
+    $('a.select_code').on("click", function(e) {
+        e.preventDefault();
+
+        $code_div = $(this).parent().next('div.code-toolbar').find('pre code').first();
+        selectText($code_div);
+
+        return false;
+    });
+
+});

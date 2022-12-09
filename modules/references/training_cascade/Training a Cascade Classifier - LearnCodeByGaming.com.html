@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<!-- saved from url=(0064)https://learncodebygaming.com/blog/training-a-cascade-classifier -->
+<html><link type="text/css" id="dark-mode" rel="stylesheet" href="https://learncodebygaming.com/blog/training-a-cascade-classifier"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <script type="text/javascript" async="" src="./Training a Cascade Classifier - LearnCodeByGaming.com_files/analytics.js.download"></script><script async="" src="./Training a Cascade Classifier - LearnCodeByGaming.com_files/js"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-145703361-1');
+    </script>
+
+    
+    <title>Training a Cascade Classifier - LearnCodeByGaming.com</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="programming, software, coaching, mentorship, development, computer science, javascript, programmer">
+    <meta name="description" content="Learn how to code and start your career in software development.">
+    
+
+    <link rel="stylesheet" href="./Training a Cascade Classifier - LearnCodeByGaming.com_files/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="./Training a Cascade Classifier - LearnCodeByGaming.com_files/stackedit.css" rel="stylesheet">
+    <link href="./Training a Cascade Classifier - LearnCodeByGaming.com_files/prism.css" rel="stylesheet">
+    <link href="./Training a Cascade Classifier - LearnCodeByGaming.com_files/style.css" rel="stylesheet">
+
+</head>
+
+<body class="stackedit">
+
+    <div class="stackedit__html">
+
+        <header class="row">
+
+            <div class="col-lg-7">
+                <h1 class="mt-5 mb-0 mb-lg-5 text-uppercase">
+                    <a href="https://learncodebygaming.com/"><span class="extra-bold">Learn Code</span> By Gaming</a>
+                </h1>
+            </div>
+            <div class="col-lg-5 mb-5 mb-lg-0">
+                <div class="d-flex h-100">
+                    <div class="positioning-statement justify-content-center align-self-center">
+                        Learn how to program <br class="d-none d-lg-inline">by playing video games.
+                    </div>
+                </div>
+            </div>
+
+        </header>
+
+        
+
+        
+
+    <h1>OpenCV Object Detection in Games</h1>
+
+    <div class="row">
+    <div class="col-12 blog-entry">
+
+        <h3 class="my-0">Training a Cascade Classifier</h3>
+        <div class="font-weight-light">August 22, 2020</div>
+        
+            <div>Part of: <a href="https://learncodebygaming.com/blog/tutorial/opencv-object-detection-in-games" class="font-weight-bold">OpenCV Object Detection in Games</a></div>
+        
+
+        <div class="row my-4">
+            <div class="col-sm-10 offset-sm-1">
+                <div class="embed-responsive embed-responsive-16by9 text-center">
+                    <iframe width="560" height="315" src="./Training a Cascade Classifier - LearnCodeByGaming.com_files/XrCAvs9AePM.html" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+                </div>
+            </div>
+        </div>
+
+        <p>In this tutorial, we train an OpenCV Cascade Classifier entirely on Windows to detect objects in a video game in real-time. Making your own Haar Cascade isn't complicated, but it can be a lot of work. This project is a great intro for beginners to Machine Learning. I'll explain the basics of Machine Learning, and walk you through the implementation of training and using your own model for computer vision in Python.</p>
+
+<h5 class="mb-0">Links</h5>
+<blockquote>
+Grab the code on GitHub: <a href="https://github.com/learncodebygaming/opencv_tutorials" target="_blank">https://github.com/learncodebygaming/opencv_tutorials</a><br>
+Official tutorial on training a Cascade Classifier: <a href="https://docs.opencv.org/4.2.0/dc/d88/tutorial_traincascade.html" target="_blank">https://docs.opencv.org/4.2.0/dc/d88/tutorial_traincascade.html</a><br>
+Official tutorial on using a Cascade Classifier: <a href="https://docs.opencv.org/4.2.0/db/d28/tutorial_cascade_classifier.html" target="_blank">https://docs.opencv.org/4.2.0/db/d28/tutorial_cascade_classifier.html</a><br>
+Installing OpenCV 3.4 on Windows: <a href="https://docs.opencv.org/3.4.11/d3/d52/tutorial_windows_install.html" target="_blank">https://docs.opencv.org/3.4.11/d3/d52/tutorial_windows_install.html</a><br>
+</blockquote>
+
+<p>Normally when we program something, like when we write a function (for example), 
+we expect certain inputs (like the parameters in our function).
+And then at the end we'll end up with some output (like the return part of a function).
+And in the middle, to get from the input to the output, we write some logic (if statements, loops, all that stuff).</p>
+
+<p>With Machine Learning it's exactly the same, except that middle part is replaced by a Machine Learning model.
+So with Machine Learning you're not writing any of your own logic anymore, 
+instead you're trusting this mysterious dark jumble of multi-dimensional calculus to transform your inputs into your desired output.</p>
+
+<p>And at first your model won't know how to do... what you want it to do. Its output will be no better than random guesses.
+To get the output we want, we must first train our model.
+We do that by showing it lots of input examples, and for each example we tell the model what we want the output to be.
+Once it has seen enough examples, a well trained model will be able to accurately predict what the output should be given some new set of inputs.</p>
+
+<p>That's the super summarized version of how all Machine Learning works.</p>
+
+<p>In our case, our input is going to be screenshot images from the video game we're playing.
+And the output we want is a list of rectangles that identify the objects we're trying to detect.
+And fortunately for us, OpenCV's Cascade Classifiers are designed to do exactly that.</p>
+
+<p>OpenCV actually comes with two types of Cascade Classifiers: Haar and LBP. 
+Haar is generally more accurate, while LBP is generally faster to train. 
+And if you're not already aware, training these models can take a really long time: like hours or days is pretty common.
+I'm going to be focusing on Haar, but it's easy to switch if you want to give LBP a try.</p>
+
+<p>The way a Haar classifier works is it looks for features in an image, very much like the ORB feature detection we talked about in the last video.
+And it looks for these features in different layers.
+So at the top layer it will be looking at large features that span nearly the whole image window, 
+down to the bottom layer where it’s looking for very fine details.
+This makes the end model fast enough to detect objects in real-time, because it can quickly reject areas of the image that fail to match the features in the top-most layers.
+And it can spend more time analyzing areas of the image that are good candidates, by studying those finer details.</p>
+
+<p>Alright, hopefully you have a general understanding now of how Machine Learning works, and what makes a Haar Cascade Classifier unique.
+The great part is, the code for all of this is very straight forward. You won't have any problem understanding it.</p>
+
+<p>The art of doing this well actually isn't so much in the code, it's more in gathering the data to train your model with. To get good results, you need quality data, and you need lots of it. Like the more the better.</p>
+
+<p>Now we need two types of data:
+We need the positive images - which are images that contain the object we're trying to detect...
+and we need negative images - which will be screenshots from the game that don't contain our object at all. The Machine Learning algorithm needs to see both what <em>is</em> and what <em>is not</em> the object in order for it to learn.</p>
+
+<p>And you want to get examples of your object in as many different conditions as possible: 
+so every possible lighting situation, different positions, all of that.
+In this series I've been looking for limestone deposits in Albion Online, and the day/night cycle has been giving me lots of problems.
+So I want to make sure to capture screenshots of limestone from all different times of the day.
+The quality of the dataset you gather is going to have a huge impact on how good your final detector is, so keep that in mind.</p>
+
+<p>So the first step is getting our positive and negative images, and let's write some code to make that really easy on us.</p>
+
+<p></p><div class="code-toolbar"><pre class=" language-python"><code class=" language-python"><span class="token comment"># main.py</span>
+wincap <span class="token operator">=</span> WindowCapture<span class="token punctuation">(</span><span class="token string">'Albion Online Client'</span><span class="token punctuation">)</span>
+
+loop_time <span class="token operator">=</span> time<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">while</span><span class="token punctuation">(</span><span class="token boolean">True</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+
+    <span class="token comment"># get an updated image of the game</span>
+    screenshot <span class="token operator">=</span> wincap<span class="token punctuation">.</span>get_screenshot<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token comment"># display the images</span>
+    cv<span class="token punctuation">.</span>imshow<span class="token punctuation">(</span><span class="token string">'Unprocessed'</span><span class="token punctuation">,</span> screenshot<span class="token punctuation">)</span>
+
+    <span class="token comment"># debug the loop rate</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'FPS {}'</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">/</span> <span class="token punctuation">(</span>time<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> loop_time<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    loop_time <span class="token operator">=</span> time<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token comment"># press 'q' with the output window focused to exit.</span>
+    <span class="token comment"># press 'f' to save screenshot as a positive image,</span>
+    <span class="token comment"># press 'd' to save as a negative image.</span>
+    <span class="token comment"># waits 1 ms every loop to process key presses</span>
+    key <span class="token operator">=</span> cv<span class="token punctuation">.</span>waitKey<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> key <span class="token operator">==</span> <span class="token builtin">ord</span><span class="token punctuation">(</span><span class="token string">'q'</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        cv<span class="token punctuation">.</span>destroyAllWindows<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">break</span>
+    <span class="token keyword">elif</span> key <span class="token operator">==</span> <span class="token builtin">ord</span><span class="token punctuation">(</span><span class="token string">'f'</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        cv<span class="token punctuation">.</span>imwrite<span class="token punctuation">(</span><span class="token string">'positive/{}.jpg'</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span>loop_time<span class="token punctuation">)</span><span class="token punctuation">,</span> screenshot<span class="token punctuation">)</span>
+    <span class="token keyword">elif</span> key <span class="token operator">==</span> <span class="token builtin">ord</span><span class="token punctuation">(</span><span class="token string">'d'</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        cv<span class="token punctuation">.</span>imwrite<span class="token punctuation">(</span><span class="token string">'negative/{}.jpg'</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span>loop_time<span class="token punctuation">)</span><span class="token punctuation">,</span> screenshot<span class="token punctuation">)</span>
+
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'Done.'</span><span class="token punctuation">)</span>
+</code></pre><div class="toolbar"><div class="toolbar-item"><span>Python</span></div></div></div><p></p>
+
+<p>Manually create folders for <code>/positive</code> and <code>/negative</code> in your project. Now with our game and our script both running, with the OpenCV output window focused we can press 'f' to capture a screenshot and save it to the <code>positive</code> folder, or 'd' to save a screenshot to the <code>negative</code> folder.</p>
+
+<p>Remember you want to collect lots of examples of each. I captured 100 positive and 100 negative, but you will likely want to do even more than that. And remember to get a variety of samples from all different conditions you want your model to recognize objects in. When you're done, review your captures to check for any mistakes and confirm you got a good variety. Again, the more samples you get, the better your final results will be. But we can always come back, collect more screenshots later, and retrain our model.</p>
+
+<p>Now we need to prepare the negative samples to be used for training. To do this, we simply need to create a text file that lists where all our negative samples can be found. Rather than do this manually, let's write a quick function to do this for us.</p>
+
+<p></p><div class="code-toolbar"><pre class=" language-python"><code class=" language-python"><span class="token comment"># reads all the files in the /negative folder and generates neg.txt from them.</span>
+<span class="token keyword">def</span> <span class="token function">generate_negative_description_file</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment"># open the output file for writing. will overwrite all existing data in there</span>
+    <span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">'neg.txt'</span><span class="token punctuation">,</span> <span class="token string">'w'</span><span class="token punctuation">)</span> <span class="token keyword">as</span> f<span class="token punctuation">:</span>
+        <span class="token comment"># loop over all the filenames</span>
+        <span class="token keyword">for</span> filename <span class="token keyword">in</span> os<span class="token punctuation">.</span>listdir<span class="token punctuation">(</span><span class="token string">'negative'</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            f<span class="token punctuation">.</span>write<span class="token punctuation">(</span><span class="token string">'negative/'</span> <span class="token operator">+</span> filename <span class="token operator">+</span> <span class="token string">'\n'</span><span class="token punctuation">)</span>
+</code></pre><div class="toolbar"><div class="toolbar-item"><span>Python</span></div></div></div><p></p>
+
+<p>You can run this script manually from the Python console to generate the needed <code>neg.txt</code> file.</p>
+
+<p></p><div class="code-toolbar"><pre class=" language-shell"><code class=" language-shell">$ python
+Python 3.8.0 (tags/v3.8.0:fa919fd, Oct 14 2019, 19:21:23) [MSC v.1916 32 bit (Intel)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+&gt;&gt;&gt; from cascadeutils import generate_negative_description_file
+&gt;&gt;&gt; generate_negative_description_file()
+&gt;&gt;&gt; exit()
+</code></pre><div class="toolbar"><div class="toolbar-item"><span>Bash</span></div></div></div><p></p>
+
+<p>Next we need to generate a similar file for the positive images, but this one is a little more complicated. It needs to contain not only the image paths, but also the bounding box coordinates for each object we want to detect in each image. Rather than annotate these manually, or write a script ourselves, let's use OpenCV annotation program which is designed specifically for creating this file.</p>
+
+<p>Unfortunately this simple <code>opencv_annotation.exe</code> command line program isn't included with pip installed OpenCV, and it isn't included in any installation of version 4.2.0. Instead we must install OpenCV version 3.4 to get access to this and other Cascade Classifier programs we will need.</p>
+
+<p>I recommend downloading the newest version of OpenCV 3.4 from the <a href="https://sourceforge.net/projects/opencvlibrary/files/" target="_blank">pre-built Windows binaries</a>. For me that was version 3.4.11. This file is a self-extacting ZIP, and you can save the contents anywhere that's convenient for you. Once extracting, you should find the executables we need in <code>[your save location]/opencv/build/x64/vc15/bin/</code>. The programs we'll be using should all be in that folder: <code>opencv_annotation.exe</code>, <code>opencv_createsamples.exe</code>, and <code>opencv_traincascade.exe</code>.</p>
+
+<p>Even though we'll be preparing our samples and training our model with these programs from OpenCV 3.4, the resulting classifier will still be usable in our newer version of OpenCV.</p>
+
+<p>Now we can run the annotation program.</p>
+
+<p></p><div class="code-toolbar"><pre class=" language-shell"><code class=" language-shell">$ C:/Users/Ben/learncodebygaming/opencv/build/x64/vc15/bin/opencv_annotation.exe --annotations=pos.txt --images=positive/
+</code></pre><div class="toolbar"><div class="toolbar-item"><span>Bash</span></div></div></div><p></p>
+
+<p>This program will open each image in your <code>positive</code> folder one at a time in an OpenCV window. In each image you should draw a box around the objects within it that you want to be able to detect. You click once to set the upper left corner, then again to set the lower right corner. You'll see a red box enclosing your object. Press 'c' to confirm this selection. If you don't like the box you've drawn, you can click again elsewhere to draw a different box. You can also press 'd' to undo the previous confirmation. When done with an image, click 'n' to move to the next one. You can press 'esc' to exit early, or it will exit automatically when you've annotated all of the images.</p>
+
+<p>When you're done, review the pos.txt output file. You will likely need to change the direction of the slashes or else <code>opencv_createsamples.exe</code> will complain that it can't find your files in the next step.</p>
+
+<p>Next we need to create a vector file from all of our positive annotations.</p>
+
+<p></p><div class="code-toolbar"><pre class=" language-shell"><code class=" language-shell">$ C:/Users/Ben/learncodebygaming/opencv/build/x64/vc15/bin/opencv_createsamples.exe -info pos.txt -w 24 -h 24 -num 1000 -vec pos.vec
+</code></pre><div class="toolbar"><div class="toolbar-item"><span>Bash</span></div></div></div><p></p>
+
+<p>There are a few arguments here to pay attention to. Value for <code>-num</code> should be greater than or equal to the number of rectangles you drew, so that all of them get turned into vectors. If you drew 100 rectangles and set this to 1000, it will still output only 100 vectors, so you can just make this any large number. The <code>-w</code> and <code>-h</code> is the detection window size you want to use. You won't be able to detect objects smaller than this size, and the larger you make this the longer it will take to train your model. 20 or 24 are common.</p>
+
+<p>If you get an error like:</p>
+
+<p></p><div class="code-toolbar"><pre class=" language-shell"><code class=" language-shell">OpenCV: terminate handler is called! The last OpenCV error is: OpenCV(3.4.11) Error: Assertion failed (0 &lt;= roi.x &amp;&amp; 0 &lt;= roi.width &amp;&amp; roi.x + roi.width &lt;= m.cols &amp;&amp; 0 &lt;= roi.y &amp;&amp; 0 &lt;= roi.height &amp;&amp; roi.y + roi.height &lt;= m.rows) in cv::Mat::Mat, file C:\build\3_4_winpack-build-win64-vc15\opencv\modules\core\src\matrix.cpp, line 466
+</code></pre><div class="toolbar"><div class="toolbar-item"><span>Bash</span></div></div></div><p></p>
+
+<p>This usually means <code>opencv_createsamples.exe</code> can't find the image files. Check the paths in the pos.txt file. Don't use spaces in the filepath, and fix the slashes. I had trouble using absolute paths here on Windows, so I recommend making the paths relative to your project folder, <code>cd</code>-ing into your project directory in your terminal, and running the .exe from there using the full absolute path on the .exe itself (like my commands demonstrate above).</p>
+
+<p>When the create samples program completes successfully, it will tell you how many samples it created, which should be the same as how many rectangles you drew around objects in the annotation step.</p>
+
+<p>Finally, we're ready to train our cascade classifier model!</p>
+
+<p>Create a <code>/cascade</code> folder to hold the outputs from the training. Then you can run <code>opencv_traincascade.exe</code>.</p>
+
+<p></p><div class="code-toolbar"><pre class=" language-shell"><code class=" language-shell">$ C:/Users/Ben/learncodebygaming/opencv/build/x64/vc15/bin/opencv_traincascade.exe -data cascade/ -vec pos.vec -bg neg.txt -numPos 200 -numNeg 100 -numStages 10 -w 24 -h 24
+</code></pre><div class="toolbar"><div class="toolbar-item"><span>Bash</span></div></div></div><p></p>
+
+<p>There are many arguments here to talk about.</p>
+
+<ul>
+	<li>The <code>-numPos</code> needs to be some amount lower than the number of samples created by createsamples.
+		<ul><li>If you get errors that look like: Can not get new positive sample. Then you need to either lower your -numPos or lower the -minHitRate (default 0.995).</li></ul>
+	</li>
+	<li>A popular suggestion for <code>-numNeg</code> is to use half of <code>-numPos</code>. This is a good place to start, but you'll want to try many different values here. Using twice the number of negative to positive, or even more, can sometimes yield better results.</li>
+	<li>The <code>-w</code> and <code>-h</code> must match what was used for the createsamples step.</li>
+	<li>The more <code>-numStages</code> the longer it will take to train. Too many and you might overtrain.
+		<ul><li>If you run initially with 10 stages, you can later run it again with more stages, like 30, and it will pick up from where it left off. As you get deeper into the stages, each one takes longer.</li></ul>
+	</li>
+</ul>
+
+<p>When you run the training, you'll get some useful insights in the terminal output. In the results table, HR means hit rate (the number of positive examples that were correctly identified), FA is false alarm (the number of negative samples that were incorrectly identified), and N = weak layer number (which Haar cascade layer the rates are for). A really small <code>Neg acceptanceRatio</code> can sometimes be an indication of overtraining, ie. if it has e-06. We'll talk more about overtraining in a little bit.</p>
+
+<p>Now's a good time to explain what goes on when training a machine learning model.</p>
+
+<ul>
+	<li>The trainer will show your model a random image: either one of the objects you drew a box around, or a random cutout from one of your negative images.</li>
+	<li>The model will try to predict whether this image is from the positive or negative pile.</li>
+	<li>The trainer will tell your model whether that prediction was right or wrong.</li>
+	<li>The model will make adjustments to itself based on whether it was right or wrong.</li>
+	<li>Then the cycle repeats, thousands of times.</li>
+</ul>
+
+<p>This process is sort of like learning with flashcards when you were a kid. Over time, with more an more training, the model begins to identify patterns that help it make more accurate predictions.</p>
+
+<p>When <code>opencv_traincascade.exe</code> finishes, you'll find your trained model in <code>cascade/cascade.xml</code>. We can now use this model to find objects in new screenshots. Let's re-use the Vision class to draw the object detection rectangles on our output.</p>
+
+<p></p><div class="code-toolbar"><pre class=" language-python"><code class=" language-python"><span class="token comment"># main.py</span>
+wincap <span class="token operator">=</span> WindowCapture<span class="token punctuation">(</span><span class="token string">'Albion Online Client'</span><span class="token punctuation">)</span>
+<span class="token comment"># load an empty Vision class</span>
+vision_limestone <span class="token operator">=</span> Vision<span class="token punctuation">(</span><span class="token boolean">None</span><span class="token punctuation">)</span>
+
+<span class="token comment"># load the trained model</span>
+cascade_limestone <span class="token operator">=</span> cv<span class="token punctuation">.</span>CascadeClassifier<span class="token punctuation">(</span><span class="token string">'cascade/cascade.xml'</span><span class="token punctuation">)</span>
+
+loop_time <span class="token operator">=</span> time<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">while</span><span class="token punctuation">(</span><span class="token boolean">True</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+
+    <span class="token comment"># get an updated image of the game</span>
+    screenshot <span class="token operator">=</span> wincap<span class="token punctuation">.</span>get_screenshot<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token comment"># do object detection</span>
+    rectangles <span class="token operator">=</span> cascade_limestone<span class="token punctuation">.</span>detectMultiScale<span class="token punctuation">(</span>screenshot<span class="token punctuation">)</span>
+
+    <span class="token comment"># draw the detection results onto the original image</span>
+    detection_image <span class="token operator">=</span> vision_limestone<span class="token punctuation">.</span>draw_rectangles<span class="token punctuation">(</span>screenshot<span class="token punctuation">,</span> rectangles<span class="token punctuation">)</span>
+
+    <span class="token comment"># display the images</span>
+    cv<span class="token punctuation">.</span>imshow<span class="token punctuation">(</span><span class="token string">'Matches'</span><span class="token punctuation">,</span> detection_image<span class="token punctuation">)</span>
+</code></pre><div class="toolbar"><div class="toolbar-item"><span>Python</span></div></div></div><p></p>
+
+<p>You can see the code to use a model is really simple! We just load our model file with <code>cv.CascadeClassifier()</code> and then call <code>detectMultiScale()</code>, giving it a fresh screenshot, to get a list of rectangles that bound the objects we've trained our model to detect.</p>
+
+<p>Try it out to see what kind of results you get!</p>
+
+<p><a href="./Training a Cascade Classifier - LearnCodeByGaming.com_files/cascade-classifier-object-detection.jpg" target="_blank"><img src="./Training a Cascade Classifier - LearnCodeByGaming.com_files/cascade-classifier-object-detection.jpg" alt="OpenCV Haar Cascade Classifier object detection results"></a></p>
+
+<p>In my case the classifier works decent, but I'm seeing a lot of false positives. I think I could have expected this since it trained very fast (only 2 minutes for 10 layers).</p>
+
+<p>Now it becomes a game of adjusting the parameters given to <code>opencv_createsamples.exe</code> and <code>opencv_traincascade.exe</code> to get the most out of our training data. When starting a new training, you need to clear out the <code>cascade</code> folder, or save the new training to a new folder. To test how good our classifier is, we'll do it manually by booting up the game and seeing how we feel about the results. This is a subjective measurement, but it'll give us some sense of what parameter values work better than others.</p>
+
+<p>Different parameters will work best in different situations, so you need to adjust these to find the best setup for your project/problem. Here are some tips to guide you:</p>
+
+<ul>
+	<li>You can get faster training by using the <code>-precalcValBufSize</code> and <code>-precalcIdxBufSize</code> parameters. Keep in mind that these combined values should not exceed your available system memory.</li>
+	<li>If you have too many false positives: add more <code>-numNeg</code> and train for more <code>-numStages</code>.</li>
+	<li>If you valid objects are being missed: you overfit your data so try reducing the number of stages.</li>
+</ul>
+
+<p>Overtraining or overfitting means you trained your classifier to only recognize the exact images you have in your positive folder, so it's not going to generalize well to any slightly different images. This is a common problem in machine learning. Keep in mind that the best solution isn't always more or longer training. You may get improvements by actually reducing the number of training stages. Your model will eventually hit the limit of what can be achieved with your dataset, and the only way to improve from there is with more and better training data.</p>
+
+<p>After training a couple dozen different models, these were the arguments that I thought worked best in my case:</p>
+
+<p></p><div class="code-toolbar"><pre class=" language-shell"><code class=" language-shell">$ C:/Users/Ben/learncodebygaming/opencv/build/x64/vc15/bin/opencv_traincascade.exe -data cascade/ -vec pos.vec -bg neg.txt -precalcValBufSize 6000 -precalcIdxBufSize 6000 -numPos 200 -numNeg 1000 -numStages 12 -w 24 -h 24 -maxFalseAlarmRate 0.4 -minHitRate 0.999
+</code></pre><div class="toolbar"><div class="toolbar-item"><span>Bash</span></div></div></div><p></p>
+
+<p>I decided I'd rather lean towards more false positives, rather than more misses, because in my bot script I'll be able to hover over the potential matches and confirm whether it's a limestone deposit or not by looking at the tooltip.</p>
+
+<p>That should be everything you need to know to get started with Cascade Classifiers.
+As you saw, programming-wise it's not too complicated, but gathering up all that data can be tedious, 
+and as you get more and more data the training will take longer and longer.
+But that's the name of the game in data science.</p>
+
+<p>I think a project like this is a really good place to get started with Machine Learning, 
+because you get an understanding of the practical application first,
+And then if you're interested in diving deeper into the theoretical stuff, 
+you'll have some context for understanding the overall picture of what you're trying to achieve.</p>
+
+<p>In the final part of this saga, I'll be bringing together everything we've talked about and combine it 
+with automated mouse and keyboard inputs to make a basic resource gathering bot.
+It's going to be a rather unpolished bot, but I'll give you enough where you should be able to get started on your own automation project.</p>
+
+        <hr>
+
+    </div>
+</div>
+
+    
+<div class="row my-5">
+
+    
+        <div class="col-6 col-md-4 mb-4">
+            <div class="card h-100">
+    <img src="./Training a Cascade Classifier - LearnCodeByGaming.com_files/mqdefault.jpg" class="card-img-top w-100">
+    <div class="card-body">
+        <h6 class="card-title mt-0">
+            <a href="https://learncodebygaming.com/blog/how-to-build-a-bot-with-opencv" class="stretched-link">
+                How To Build a Bot with OpenCV
+            </a>
+        </h6>
+        <div class="card-desc mt-2 d-none d-sm-block">
+            Learn how to combine OpenCV object detection with PyAutoGUI and Threading to build a custom Python video game bot. Using the OpenCV image recognition techniques …
+        </div>
+    </div>
+</div>
+        </div>
+    
+
+</div>
+
+
+    
+
+<div class="row">
+    <div class="col-12">
+        <div class="jumbotron py-5">
+            <img src="./Training a Cascade Classifier - LearnCodeByGaming.com_files/BenJohnson-Icon2.jpg" alt="Ben Johnson" class="rounded-circle float-left mr-4">
+            My name is Ben and I help people learn how to code by gaming.
+            I believe in the power of project-based learning to foster a deep understanding and joy in the craft of
+            software development.
+            On this site I share programming tutorials, coding-game reviews, and project ideas for you to explore.
+
+            <div class="mt-3 text-center">
+
+                <a href="https://www.youtube.com/channel/UCD8vb6Bi7_K_78nItq5YITA" target="_blank" class="d-inline-block mr-4 mr-md-3">
+                    <img src="./Training a Cascade Classifier - LearnCodeByGaming.com_files/youtube_social_icon_red.png" alt="YouTube" class="social">
+                </a>
+                <a href="https://twitter.com/BenLearnCode" target="_blank" class="d-inline-block mr-4 mr-md-3">
+                    <img src="./Training a Cascade Classifier - LearnCodeByGaming.com_files/Twitter_Social_Icon_Circle_Color.png" alt="Twitter" class="social">
+                </a>
+                
+
+            </div>
+
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+
+
+
+    </div>
+
+    
+    <footer>
+        <div class="footer-container">
+            ©2022 <a href="https://clockmaker.ai/" target="_blank"><strong>Clockmaker LLC</strong></a>
+            &nbsp;•&nbsp; <a href="https://learncodebygaming.com/blog">Blog</a>
+        
+            
+                &nbsp;•&nbsp; <a href="https://learncodebygaming.com/login">Login</a>
+            
+        </div>
+    </footer>
+    
+
+    <!-- JavaScript -->
+    <script src="./Training a Cascade Classifier - LearnCodeByGaming.com_files/jquery-3.4.1.min.js.download" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="./Training a Cascade Classifier - LearnCodeByGaming.com_files/popper.min.js.download" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="./Training a Cascade Classifier - LearnCodeByGaming.com_files/bootstrap.min.js.download" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="./Training a Cascade Classifier - LearnCodeByGaming.com_files/prism.js.download"></script>
+    <script src="./Training a Cascade Classifier - LearnCodeByGaming.com_files/main.js.download"></script>
+    
+
+
+
+
+</body></html>

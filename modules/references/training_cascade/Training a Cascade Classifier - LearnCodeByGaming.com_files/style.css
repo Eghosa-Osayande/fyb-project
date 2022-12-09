@@ -1,0 +1,276 @@
+
+/* general */
+
+body {
+    background: #F2F2F2;
+    color: #333333;
+}
+
+.btn.call-to-action {
+    font-weight: 600;
+    font-size: 18px;
+}
+
+ul.errorlist {
+    margin: 0;
+}
+
+a {
+    color: #50345A;
+}
+
+a:hover {
+    color: #7d518c;
+}
+
+h1, h2 {
+    font-size: 1.5em;
+    text-transform: uppercase;
+}
+
+h1:after, h2:after {
+    border-bottom: 1px solid rgba(0,0,0,.125);
+}
+
+header h1 {
+    font-size: 34px;
+    text-align: left!important;
+    letter-spacing: 0.02em;
+}
+
+header h1:after {
+    display: none;
+}
+
+header h1 .extra-bold {
+    font-weight: 900;
+}
+
+header a {
+    color: #333333;
+    text-decoration: none;
+}
+
+header .positioning-statement {
+    line-height: 20px;
+}
+
+.card a {
+    color: #262626;
+    text-decoration: none;
+}
+
+.card a:hover {
+    text-decoration: underline;
+}
+
+.card:hover {
+    -webkit-box-shadow: 0px 0px 24px 3px rgba(51,51,51,0.39);
+    -moz-box-shadow: 0px 0px 24px 3px rgba(51,51,51,0.39);
+    box-shadow: 0px 0px 24px 3px rgba(51,51,51,0.39);
+}
+
+.card:hover .card-title a {
+    color: #50345A;
+}
+
+.card .card-title {
+    letter-spacing: 0.01em;
+    margin-bottom: 0;
+}
+
+.card .card-desc {
+    line-height: 1.2em;
+    font-size: 16px;
+}
+@media (min-width: 768px) {
+    .card .card-desc {
+        font-size: 14px;
+    }
+}
+
+.jumbotron {
+    background: #50345A;
+    background: linear-gradient(0deg, rgba(80,52,90,1) 43%, rgba(42,47,79,1) 100%);
+    color: #F2F2F2;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+}
+
+.jumbotron img {
+    width: 140px;
+}
+
+.jumbotron img.social {
+    width: 28px;
+}
+
+.jumbotron a.btn {
+    background: #FFFFFF;
+    border-color: #FFFFFF;
+    color: #50345A;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+}
+
+.jumbotron a.btn:hover {
+    background: #7d518c;
+    border-color: #7d518c;
+    color: #FFFFFF;
+}
+
+/* footer */
+
+footer {
+    background-color: #E6E6E6;
+    font-size: 16px;
+    padding: 30px 0;
+    box-shadow: 0 50vh 0 50vh #E6E6E6;
+}
+
+footer a {
+    color: #141414;
+    text-decoration: none;
+}
+
+footer a:hover, footer a:focus {
+    color: #7d518c;
+}
+
+footer a.highlight-link {
+    color: #50345A;
+}
+
+footer a.highlight-link:hover, footer a.highlight-link:focus {
+    color: #7d518c;
+}
+
+footer .footer-container {
+    margin: 0 auto;
+    padding: 0 30px;
+    max-width: 810px;
+    text-align: center;
+}
+
+/* home */
+
+body.stackedit.home .stackedit__html {
+    margin-bottom: 0;
+}
+
+.btn-purple,
+.latest-blog h2 a.btn {
+    background: #50345A;
+    border-color: #50345A;
+    right:15px;
+    top:0;
+    text-transform: none;
+}
+
+.btn-purple:hover, .btn-purple:focus, .btn-purple:active,
+.latest-blog h2 a.btn:hover, .latest-blog h2 a.btn:focus, .latest-blog h2 a.btn:active {
+    background: #7d518c;
+    border-color: #7d518c;
+}
+
+.latest-blog h2 a {
+    font-size: 0.7em;
+    margin-top: 6px;
+    text-decoration: none;
+}
+
+/* blog */
+
+.blog-entry p {
+    line-height: 1.5em;
+}
+
+.blog-entry hr {
+    border-top: 1px solid rgba(0,0,0,.125);
+}
+
+.blog-entry h3 {
+    font-size: 2.0em;
+    margin: 30px 0;
+}
+
+/* prevents horizontal scrollbars on mobile */
+.blog-entry {
+  /* These are technically the same, but use both */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+
+  -ms-word-break: break-all;
+  /* This is the dangerous one in WebKit, as it breaks things wherever */
+  word-break: break-all;
+  /* Instead use this non-standard one: */
+  word-break: break-word;
+
+  /* Adds a hyphen where the word breaks, if supported (No Blink) */
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+
+/* prism overrides */
+
+code {
+    color: inherit;
+}
+
+/* fix conflicts between bootstrap and stackedit css */
+
+body.stackedit .h1, body.stackedit .h2, body.stackedit .h3, body.stackedit .h4, body.stackedit .h5, body.stackedit .h6,
+body.stackedit h1, body.stackedit h2, body.stackedit h3, body.stackedit h4, body.stackedit h5, body.stackedit h6 {
+    font-weight: 700;
+}
+
+body.stackedit .stackedit__html {
+    max-width: 810px;
+    margin-bottom: 48px;
+}
+
+body.stackedit-wide .stackedit__html {
+    max-width: 1000px;
+    margin-bottom: 100px;
+}
+
+a.btn {
+    text-decoration: none;
+}
+
+button.btn {
+    font-family: Lato,Helvetica Neue,Helvetica,sans-serif;
+}
+
+.modal h1, .modal h2, .modal h3 {
+    margin: 20px 0;
+}
+
+.modal h1:after, .modal h2:after, .modal h3:after {
+    position: static;
+    border: none;
+}
+
+/* training */
+
+.condensed h3 {
+    margin: 1.4em 0 0.6em 0;
+}
+
+.condensed p {
+    margin: 0.5em 0;
+}
+
+p label,
+p label input[type=checkbox] {
+    cursor: pointer;
+}
+
+.terms-box {
+    background-color: #F2F2F2;
+    height: 240px;
+    overflow-y: scroll;
+    padding: 20px 0 20px 0;
+}
